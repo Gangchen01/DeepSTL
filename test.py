@@ -17,39 +17,17 @@ class OPTION:
 
 def run_program():
 	# Read formula and state
-	Robust = Robustness(sys.argv, OPTION())
-	# Create tree
-	Robust.BiTree()
-	# Create trajectory
-	tree = Robust.tree
 
 
-	struc = []
-	data =[]
-
-	EncodeSuccint(tree, struc, data)
 	name =['x1']
+	time =np.linspace(0,10,1001)
+	signal = np.array([time])
+	state, tf, len_name, up, lb, formula = Init_state(name, signal, time)
+	tree= formula.get_tree()
+	print_tree_indented(tree)
 
-
-	formuals = Formula(struc,data,name,5)
-
-	vector = formuals.state_vector()
-
-	act =np.array([3,0,5,0,0,0,1.2,0,1,2,4])
-
-	tree1, method =formuals.get_action_tree(act)
-
-	trr = formuals.combine_formula(tree1,tree,method)
-
-
-	trer = formuals.get_tree()
-
-	tree2 = formuals.get_newstate_tree(tree1,method)
-
-	formuals.update_state(trr)
-
-	state = Init_state(10,name,1,2)
-	print(state)
+	rewards= robust(tree, name, signal,time)
+	print(rewards[0])
 
 
 

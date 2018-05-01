@@ -60,9 +60,9 @@ class STL_Sys:
 # show to the end-user. 
 
 class Robustness:
-	def __init__(self, argv, option):
+	def __init__(self, argv):
 		self.START_TIME = time()
-		self.option = option
+		#self.option = option
 		if len(argv) == 1:
 			self.formula_filename = "example_formula.txt"
 			self.state_filename   = "example_state.txt"
@@ -75,28 +75,9 @@ class Robustness:
 		else:
 			sys.exit("\033[1;31;47m Error: Too many input arguments! \033[0m")
 
-	def BiTree(self):
-		formula_str = read_file(self.formula_filename)
-		STATE = read_state(self.state_filename)
-		print_out([formula_str, STATE], "raw", self.option.SHOW_RAW)
+	def SetTree(self, tree):
+		self.tree = tree
 
-		formula_str = preprocess(formula_str)
-		stat(formula_str, STATE, self.option.SHOW_STAT)
-
-		index = 0
-		formula_list = list()
-		while index < len(formula_str):
-			index, formula_list = get_formula(index, formula_str, formula_list, STATE)
-		print_out(formula_list, "list", self.option.SHOW_LIST)
-
-		formula_list = compress_list(formula_list)
-		print_out(formula_list, "compress_list", self.option.SHOW_COMP_LIST)
-
-		self.tree = get_tree(formula_list)
-		# self.tree = auto_timebound(self.tree, self.tree.cargo['Bound'])
-
-		print_out(self.tree, "tree_formula", self.option.SHOW_TREE_FORM)
-		print_out(self.tree, "tree_structure", self.option.SHOW_TREE_STRUC)
 
 
 
