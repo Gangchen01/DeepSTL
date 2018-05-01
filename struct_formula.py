@@ -5,7 +5,7 @@ from fractions import Fraction
 import numpy as np
 import random
 from cal_robustness import *
-
+import multiprocessing
 class Formula:
     def __init__(self, struc =None,data =None, name= None, width = None):
 
@@ -165,20 +165,36 @@ def Init_state(name,signal,time):
 
     return formulas.state_vector(), tf, len_name, up,lb, formulas
 
-def robust(tree,name, signal, time):
+def robust(param):
+    tree = param[0]
+    name = param[1]
+    signal = param[2]
+    time = param[3]
     system = STL_Sys(name, signal, time)
     Robust = Robustness(sys.argv)
     Robust.SetTree(tree)
-    return Robust.Eval(system)
+    return Robust.Eval(system)[0]
 
 def reward(tree,name, signalset, time):
     ls = np.size(signalset,0)
     robustness=[]
     for index in range(ls):
-        sig = signalset[index]
-        robustness= np.append(robustness,robust(tree,name,sig,time)[0])
+        pp =(tree,name, signalset[index],time)
+        robustness.append(robust(pp))
 
     return min(robustness)
+
+def poolreward(tree,name,signalset,time):
+    ls = np.size(signalset,0)
+    params=[]
+    for index in range(ls):
+        pp = (tree, name, signalset[index], time)
+        params.append(pp)
+
+    pool = multiprocessing.Pool()
+    results = pool.map(robust, params)
+    return min(results)
+
 
 
 

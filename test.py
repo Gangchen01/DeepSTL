@@ -20,14 +20,26 @@ def run_program():
 
 
 	name =['x1']
-	time =np.linspace(0,10,1001)
-	signal = np.array([time])
-	state, tf, len_name, up, lb, formula = Init_state(name, signal, time)
-	tree= formula.get_tree()
-	print_tree_indented(tree)
+	time1 =np.linspace(0,10,1001)
+	#signal = np.array([time1])
+	signal =[]
+	sig= np.random.rand(1,1001)
+	for index in range(100000):
+		signal.append(sig)
 
-	rewards= robust(tree, name, signal,time)
-	print(rewards[0])
+	t0 = time()
+	state, tf, len_name, up, lb, formula = Init_state(name, signal, time1)
+	tree= formula.get_tree()
+	#print_tree_indented(tree)
+	t1 = time()
+	param = (tree,name,signal[0],time1)
+	rewards= reward(tree,name,signal,time1)
+	t2 = time()
+	rewardd = poolreward(tree,name,signal,time1)
+	t3 = time()
+	print(t2-t1)
+	print(t3-t2)
+
 
 
 
