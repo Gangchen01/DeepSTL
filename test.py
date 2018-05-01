@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 from cal_robustness import *
+from struct_formula import *
 # import numpy as np
 
 # Print-out control panel
@@ -21,13 +22,40 @@ def run_program():
 	Robust.BiTree()
 	# Create trajectory
 	tree = Robust.tree
+
+
 	struc = []
 	data =[]
 
 	EncodeSuccint(tree, struc, data)
-	print(struc)
+	name =['x1']
 
-	print(data)
+
+	formuals = Formula(struc,data,name,5)
+
+	vector = formuals.state_vector()
+
+	act =np.array([3,0,5,0,0,0,1.2,0,1,2,3])
+
+	tree1, method =formuals.get_action_tree(act)
+
+	trr = formuals.combine_formula(tree1,tree,method)
+	print_tree_indented(trr)
+
+	trer = formuals.get_tree()
+
+	tree2 = formuals.get_state_tree(tree1,method)
+
+	formuals.update_state(trr)
+
+
+
+	print(method)
+
+	print(vector)
+
+
+
 
 
 
