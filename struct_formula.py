@@ -3,6 +3,7 @@
 from binary_tree import *
 from fractions import Fraction
 import numpy as np
+import random
 
 class Formula:
     def __init__(self, struc =None,data =None, name= None, width = None):
@@ -19,7 +20,6 @@ class Formula:
         scale = []
         for index in range(len(data)):
             if data[index]['Value'][1] in ['>','>=','<','<=']:
-                print(scale)
                 scale = np.append(scale,data[index]['Value'][2])
             else:
                 scale = np.append(scale,np.array([0]))
@@ -53,16 +53,16 @@ class Formula:
         if vector[2]>0:
             if vector[0] == 3:
                 cargo = {'Value': 'alw', 'Bound':[vector[5], vector[6]]}
-                name = self.name[int(vector[7])]
+                name1 = self.name[int(vector[7])]
                 dir =['<=', '>', '>=','<']
-                right = Tree({'Value':[name, dir[int(vector[8])], vector[9] ], 'Bound': None})
+                right = Tree({'Value':[name1, dir[int(vector[8])], vector[9] ], 'Bound': None})
                 tree = Tree(cargo)
                 tree.right = right
             elif vector[0] ==4:
                 cargo = {'Value': 'ev', 'Bound':[vector[5], vector[6]]}
-                name = self.name[int(vector[7])]
+                name1 = self.name[int(vector[7])]
                 dir =['<=', '>', '>=','<']
-                right = Tree({'Value':[name, dir[int(vector[8])], vector[9]], 'Bound': None})
+                right = Tree({'Value':[name1, dir[int(vector[8])], vector[9]], 'Bound': None})
                 tree = Tree(cargo)
                 tree.right = right
             else:
@@ -107,7 +107,7 @@ class Formula:
         else:
             print('Invalid method')
 
-    def get_state_tree(self,action, method):
+    def get_newstate_tree(self,action, method):
         return self.combine_formula(action,self.get_tree(),method)
 
     def get_tree(self):
@@ -127,6 +127,53 @@ class Formula:
         zero_struc =np.zeros(2*self.width+1 - len(self.struc))
         struct =np.concatenate((zero_struc,self.struc, ), axis=0)
         return np.concatenate((struct,time,scale,name_value,dir), axis =0)
+    def model(self, act_vector):
+        tree1, method = self.get_action_tree(act_vector)
+        tree2 =self.get_tree()
+        tree = self.combine_formula(tree1,tree2,method)
+        self.update_state(tree)
+        return self.state_vector()
+
+
+def Init_state(tf, name,lb,up):
+    bit1 = random.randint(3, 4)
+    bit2 = 0
+    bit3 = random.randint(0, 1) * 5
+    bit4 = 0
+    bit5 = 0
+    bit6 = random.random() * tf
+    bit7 = random.random() * (tf - bit6)
+    bit8 = random.randint(0, len(name) - 1)
+    bit9 = random.randint(0,3)
+    bit10 = random.uniform(lb,up)
+    bit11 = random.randint(1,3)
+
+    act = [bit1, bit2, bit3, bit4, bit5,bit6, bit7, bit8, bit9, bit10, bit11]
+    print(act)
+
+    formulas = Formula([],[],name,5)
+
+    tree1, method = formulas.get_action_tree(act)
+    tree2 = formulas.get_tree()
+    tree = formulas.combine_formula(tree1, tree2, method)
+    formulas.update_state(tree)
+
+
+    return formulas.state_vector()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
