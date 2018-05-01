@@ -20,12 +20,27 @@ def run_program():
 	# Create tree
 	Robust.BiTree()
 	# Create trajectory
-	time = np.linspace(0,10,1001)
-	signal = np.array([time])
-	name = ['x1']
-	system = STL_Sys(name,signal,time)
+	tree = Robust.tree
+	struc = []
+	data =[]
+
+	EncodeSuccint(tree, struc, data)
+	print(struc)
+
+	print(data)
+
+
+
+
+
+
+
+	#time = np.linspace(0,10,1001)
+	#signal = np.array([time])
+	#name = ['x1']
+	#system = STL_Sys(name,signal,time)
 	# Calculate robustness
-	Robust.Eval_Robust(system)
+	#Robust.Eval_Robust(system)
 	
 
 if __name__ == '__main__':
